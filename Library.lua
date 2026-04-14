@@ -232,13 +232,13 @@ local Library = {
 
     -- colors and font --
     FontColor = Color3.fromRGB(255, 255, 255);
-    MainColor = Color3.fromRGB(28, 28, 28);
-    BackgroundColor = Color3.fromRGB(20, 20, 20);
+    MainColor = Color3.fromRGB(26, 25, 35);
+    BackgroundColor = Color3.fromRGB(22, 21, 31);
 
-    AccentColor = Color3.fromRGB(0, 85, 255);
+    AccentColor = Color3.fromRGB(103, 89, 183);
     DisabledAccentColor = Color3.fromRGB(142, 142, 142);
 
-    OutlineColor = Color3.fromRGB(50, 50, 50);
+    OutlineColor = Color3.fromRGB(51, 51, 54);
     DisabledOutlineColor = Color3.fromRGB(70, 70, 70);
 
     DisabledTextColor = Color3.fromRGB(142, 142, 142);
@@ -2449,6 +2449,15 @@ do
             ColorPicker:Display()
         end)
 
+        HueBox:GetPropertyChangedSignal("Text"):Connect(function()
+            local success, result = pcall(Color3.fromHex, HueBox.Text)
+            if success and typeof(result) == "Color3" then
+                ColorPicker.Hue, ColorPicker.Sat, ColorPicker.Vib = Color3.toHSV(result)
+                ColorPicker:Display()
+                RunCallback()
+            end
+        end)
+
         RgbBox.FocusLost:Connect(function(enter)
             if enter then
                 local r, g, b = RgbBox.Text:match("(%d+),%s*(%d+),%s*(%d+)")
@@ -2458,6 +2467,15 @@ do
             end
 
             ColorPicker:Display()
+        end)
+
+        RgbBox:GetPropertyChangedSignal("Text"):Connect(function()
+            local r, g, b = RgbBox.Text:match("(%d+),%s*(%d+),%s*(%d+)")
+            if r and g and b then
+                ColorPicker.Hue, ColorPicker.Sat, ColorPicker.Vib = Color3.toHSV(Color3.fromRGB(tonumber(r), tonumber(g), tonumber(b)))
+                ColorPicker:Display()
+                RunCallback()
+            end
         end)
 
         SatVibMap.InputBegan:Connect(function(Input)
